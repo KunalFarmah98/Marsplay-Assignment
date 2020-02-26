@@ -100,6 +100,16 @@ public class DocsItem{
 		this.jsonMemberAbstract = jsonMemberAbstract;
 	}
 
+	public DocsItem(double score, String journal, String articleType, String titleDisplay, List<String> authorDisplay, String publicationDate, String eissn) {
+		this.score = score;
+		this.journal = journal;
+		this.articleType = articleType;
+		this.titleDisplay = titleDisplay;
+		this.authorDisplay = authorDisplay;
+		this.publicationDate = publicationDate;
+		this.eissn = eissn;
+	}
+
 	public List<String> getJsonMemberAbstract(){
 		return jsonMemberAbstract;
 	}

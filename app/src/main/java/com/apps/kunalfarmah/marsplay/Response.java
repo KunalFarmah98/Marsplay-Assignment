@@ -1,11 +1,10 @@
 package com.apps.kunalfarmah.marsplay;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
-public class Response{
 
-	@SerializedName("docs")
-	private List<DocsItem> docs;
+import java.util.List;
+
+public class Response{
 
 	@SerializedName("numFound")
 	private int numFound;
@@ -15,6 +14,10 @@ public class Response{
 
 	@SerializedName("maxScore")
 	private double maxScore;
+
+	@SerializedName("docs")
+	private List<DocsItem> docs;
+
 
 	public void setDocs(List<DocsItem> docs){
 		this.docs = docs;

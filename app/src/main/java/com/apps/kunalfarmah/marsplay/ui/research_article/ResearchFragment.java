@@ -1,6 +1,7 @@
 package com.apps.kunalfarmah.marsplay.ui.research_article;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apps.kunalfarmah.marsplay.DataAdapter;
+import com.apps.kunalfarmah.marsplay.DocsItem;
+import com.apps.kunalfarmah.marsplay.Farmah;
 import com.apps.kunalfarmah.marsplay.R;
+import com.apps.kunalfarmah.marsplay.RequestInterface;
+import com.apps.kunalfarmah.marsplay.Response;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ResearchFragment extends Fragment {
 
-    DataAdapter adapter;
-    public ResearchFragment(DataAdapter adapter) {
-        this.adapter=adapter;
+    List<DocsItem> docs;
+    public ResearchFragment() {
     }
 
     RecyclerView rv;
@@ -31,7 +42,45 @@ public class ResearchFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_research, container, false);
         rv = root.findViewById(R.id.researchRecycler);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv.setAdapter(adapter);
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.plos.org/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RequestInterface request = retrofit.create(RequestInterface.class);
+        Call<Farmah> call = request.getJSON();
+        try {
+            call.enqueue(new Callback<Farmah>() {
+                @Override
+                public void onResponse(Call<Farmah> call, retrofit2.Response<Farmah> response) {
+//                    if(!response.isSuccessful()){
+//                        throw new RuntimeException();
+//                    }
+                    Farmah jsonResponse = response.body();
+
+                    Log.d("MyResponse", jsonResponse.toString());
+                    Response r = jsonResponse.getResponse();
+                    docs = r.getDocs();
+                    for (DocsItem i : docs) {
+                        Log.d("Score", String.valueOf(i.getScore()));
+                    }
+                    Log.d("Size", String.valueOf(docs.size()));
+                    DataAdapter adapter = new DataAdapter(docs,"Research Article");
+                    rv.setAdapter(adapter);
+                }
+
+
+                @Override
+                public void onFailure(Call<Farmah> call, Throwable t) {
+                    Log.d("Error", t.getMessage());
+                }
+            });
+        }
+        catch (Exception e){
+            Log.d("Error",e.getMessage());
+        }
+
         return root;
     }
 }

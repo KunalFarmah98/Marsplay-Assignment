@@ -1,9 +1,9 @@
 package com.apps.kunalfarmah.marsplay;
 
 public class JSONResponse {
-    private Data data;
+    private Response data;
 
-    public Data getData(){
+    public Response getData(){
         return data;
     }
 

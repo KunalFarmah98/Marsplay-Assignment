@@ -12,9 +12,11 @@ import java.util.List;
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     private List<DocsItem> data;
+    private String type;
 
-    public DataAdapter(List<DocsItem> data) {
+    public DataAdapter(List<DocsItem> data, String type) {
         this.data = data;
+        this.type=type;
     }
 
     @NonNull
@@ -26,28 +28,30 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull DataAdapter.ViewHolder holder, int position) {
-        holder.title.setText(data.get(position).getTitleDisplay());
-        holder.journal.setText(data.get(position).getJournal());
-        holder.date.setText(data.get(position).getPublicationDate());
-        holder.essin.setText(data.get(position).getEissn());
-        String Abstract="";
-        List<String>abs = data.get(position).getJsonMemberAbstract();
-        for(String s:abs){
-            Abstract+=s;
-            Abstract+="\n";
+        if(data.get(position).getArticleType().equals(type)) {
+            holder.title.setText(data.get(position).getTitleDisplay());
+            holder.journal.setText(data.get(position).getJournal());
+            holder.date.setText(data.get(position).getPublicationDate());
+            holder.essin.setText(data.get(position).getEissn());
+            String Abstract = "";
+            List<String> abs = data.get(position).getJsonMemberAbstract();
+            for (String s : abs) {
+                Abstract += s;
+                Abstract += "\n";
+            }
+            holder.abstr.setText(Abstract);
+            holder.score.setText(String.valueOf(data.get(position).getScore()));
+            String Authors = "";
+            List<String> auth = data.get(position).getAuthorDisplay();
+            for (String author : auth) {
+                Authors += author;
+                Authors += ", ";
+            }
+            int size = Authors.length();
+            String author = "";
+            for (int i = 0; i < size - 1; i++) author += Authors.charAt(i);
+            holder.authors.setText(author);
         }
-        holder.abstr.setText(Abstract);
-        holder.score.setText(String.valueOf(data.get(position).getScore()));
-        String Authors="";
-        List<String>auth = data.get(position).getAuthorDisplay();
-        for(String author : auth){
-            Authors+=author;
-            Authors+=", ";
-        }
-        int size = Authors.length();
-        String author="";
-        for(int i=0; i<size-1; i++) author += Authors.charAt(i);
-        holder.authors.setText(author);
     }
 
     @Override
