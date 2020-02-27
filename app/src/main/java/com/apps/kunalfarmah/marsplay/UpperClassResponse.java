@@ -1,6 +1,6 @@
 package com.apps.kunalfarmah.marsplay;
 
-public class Farmah {
+public class UpperClassResponse {
     private Response response;
 
     public Response getResponse() {

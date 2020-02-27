@@ -49,11 +49,11 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final DataAdapter.ViewHolder holder, final int position) {
 
             holder.title.setText(data.get(position).getTitleDisplay());
-            holder.journal.setText("Journal: " + data.get(position).getJournal().toUpperCase());
+            holder.journal.setText(data.get(position).getJournal().toUpperCase());
             String Date = data.get(position).getPublicationDate();
             int ind = Date.indexOf('T');
             Date = Date.substring(0,ind);
-            holder.date.setText("Date: " + Date);
+            holder.date.setText(Date);
             holder.essin.setText("(EISSN: "+data.get(position).getEissn()+")");
 
             List<String> abs = data.get(position).getJsonMemberAbstract();
@@ -80,7 +80,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                     }
                 }
 
-                Log.d("Abstract", String.valueOf(position+" ")+String.valueOf(Abstract));
+                Log.d("Abstract", position + " " + Abstract);
                 int dotcount=0;
                 for(i=0; i<Abstract.length(); i++){
                     if(Abstract.charAt(i)=='.'){
@@ -91,7 +91,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                 }
                 holder.abstr.setText(limited);
             }
-            holder.score.setText("Scored: " + String.valueOf(data.get(position).getScore()));
+            holder.score.setText(String.valueOf(data.get(position).getScore()));
 
             String Authors = "";
             List<String> auth = data.get(position).getAuthorDisplay();
@@ -102,7 +102,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             int size = Authors.length();
             String author = "";
             for (int i = 0; i < size - 2; i++) author += Authors.charAt(i);
-            holder.authors.setText("Authors: " + author);
+            holder.authors.setText(author);
 
             holder.content.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,13 +113,17 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                         ,Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        if(holder.exp_tv.getVisibility()==View.GONE){
-                            holder.exp_tv.setVisibility(View.VISIBLE);
+                        if(holder.exp_tv.getVisibility()==View.VISIBLE && num!=position){
+                            //holder.exp_tv.setVisibility(View.GONE);
+                            MainActivity.collapse(holder.exp_tv);
                             num=position;
                         }
-                        else if(holder.exp_tv.getVisibility()==View.VISIBLE && num!=position){
-                            holder.exp_tv.setVisibility(View.GONE);
+                        else {
+                            MainActivity.expand(holder.exp_tv);
+                            num = position;
                         }
+
+
 
                     }
                 }

@@ -1,29 +1,22 @@
 package com.apps.kunalfarmah.marsplay.ui.correction;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apps.kunalfarmah.marsplay.DataAdapter;
 import com.apps.kunalfarmah.marsplay.DocsItem;
-import com.apps.kunalfarmah.marsplay.Farmah;
-import com.apps.kunalfarmah.marsplay.MainActivity;
+import com.apps.kunalfarmah.marsplay.UpperClassResponse;
 import com.apps.kunalfarmah.marsplay.R;
-import com.apps.kunalfarmah.marsplay.ReadActivity;
 import com.apps.kunalfarmah.marsplay.RequestInterface;
 import com.apps.kunalfarmah.marsplay.Response;
 
@@ -46,6 +39,7 @@ public class CorrectionFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_correction, container, false);
         rv = root.findViewById(R.id.correctionRecycler);
+        rv.setItemAnimator(new DefaultItemAnimator());
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
@@ -54,7 +48,7 @@ public class CorrectionFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         final RequestInterface request = retrofit.create(RequestInterface.class);
-        Call<Farmah> call = request.getJSON();
+        Call<UpperClassResponse> call = request.getJSON();
         // Set up progress before call
         final ProgressDialog progressDoalog;
         progressDoalog = new ProgressDialog(getContext());
@@ -63,11 +57,11 @@ public class CorrectionFragment extends Fragment {
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDoalog.show();
         try {
-            call.enqueue(new Callback<Farmah>() {
+            call.enqueue(new Callback<UpperClassResponse>() {
                 @Override
-                public void onResponse(Call<Farmah> call, retrofit2.Response<Farmah> response) {
+                public void onResponse(Call<UpperClassResponse> call, retrofit2.Response<UpperClassResponse> response) {
                    progressDoalog.dismiss();
-                    Farmah jsonResponse = response.body();
+                    UpperClassResponse jsonResponse = response.body();
 
                     Log.d("MyResponse", jsonResponse.toString());
                     Response r = jsonResponse.getResponse();
@@ -82,7 +76,7 @@ public class CorrectionFragment extends Fragment {
 
 
                 @Override
-                public void onFailure(Call<Farmah> call, Throwable t) {
+                public void onFailure(Call<UpperClassResponse> call, Throwable t) {
                     Log.d("Error", t.getMessage());
                 }
             });
