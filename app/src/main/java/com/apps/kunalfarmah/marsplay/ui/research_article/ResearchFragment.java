@@ -1,5 +1,6 @@
 package com.apps.kunalfarmah.marsplay.ui.research_article;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +51,13 @@ public class ResearchFragment extends Fragment {
                 .build();
         RequestInterface request = retrofit.create(RequestInterface.class);
         Call<Farmah> call = request.getJSON();
+        // Set up progress before call
+        final ProgressDialog progressDoalog;
+        progressDoalog = new ProgressDialog(getContext());
+        progressDoalog.setMax(100);
+        progressDoalog.setMessage("Loading...");
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDoalog.show();
         try {
             call.enqueue(new Callback<Farmah>() {
                 @Override
@@ -58,6 +66,7 @@ public class ResearchFragment extends Fragment {
 //                        throw new RuntimeException();
 //                    }
                     Farmah jsonResponse = response.body();
+                    progressDoalog.dismiss();
 
                     Log.d("MyResponse", jsonResponse.toString());
                     Response r = jsonResponse.getResponse();
@@ -66,7 +75,7 @@ public class ResearchFragment extends Fragment {
                         Log.d("Score", String.valueOf(i.getScore()));
                     }
                     Log.d("Size", String.valueOf(docs.size()));
-                    DataAdapter adapter = new DataAdapter(docs,"Research Article");
+                    DataAdapter adapter = new DataAdapter(docs,"Research Article",getActivity().getApplicationContext());
                     rv.setAdapter(adapter);
                 }
 

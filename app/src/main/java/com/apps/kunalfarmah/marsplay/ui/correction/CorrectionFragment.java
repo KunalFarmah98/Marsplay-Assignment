@@ -1,10 +1,13 @@
 package com.apps.kunalfarmah.marsplay.ui.correction;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -18,7 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.apps.kunalfarmah.marsplay.DataAdapter;
 import com.apps.kunalfarmah.marsplay.DocsItem;
 import com.apps.kunalfarmah.marsplay.Farmah;
+import com.apps.kunalfarmah.marsplay.MainActivity;
 import com.apps.kunalfarmah.marsplay.R;
+import com.apps.kunalfarmah.marsplay.ReadActivity;
 import com.apps.kunalfarmah.marsplay.RequestInterface;
 import com.apps.kunalfarmah.marsplay.Response;
 
@@ -48,15 +53,20 @@ public class CorrectionFragment extends Fragment {
                 .baseUrl("https://api.plos.org/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        RequestInterface request = retrofit.create(RequestInterface.class);
+        final RequestInterface request = retrofit.create(RequestInterface.class);
         Call<Farmah> call = request.getJSON();
+        // Set up progress before call
+        final ProgressDialog progressDoalog;
+        progressDoalog = new ProgressDialog(getContext());
+        progressDoalog.setMax(100);
+        progressDoalog.setMessage("Loading...");
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDoalog.show();
         try {
             call.enqueue(new Callback<Farmah>() {
                 @Override
                 public void onResponse(Call<Farmah> call, retrofit2.Response<Farmah> response) {
-//                    if(!response.isSuccessful()){
-//                        throw new RuntimeException();
-//                    }
+                   progressDoalog.dismiss();
                     Farmah jsonResponse = response.body();
 
                     Log.d("MyResponse", jsonResponse.toString());
@@ -66,7 +76,7 @@ public class CorrectionFragment extends Fragment {
                         Log.d("Score", String.valueOf(i.getScore()));
                     }
                     Log.d("Size", String.valueOf(docs.size()));
-                    DataAdapter adapter = new DataAdapter(docs,"Correction");
+                    DataAdapter adapter = new DataAdapter(docs,"Correction",getActivity().getApplicationContext());
                     rv.setAdapter(adapter);
                 }
 
